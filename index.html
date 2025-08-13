@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин ЛШ 2025</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Магазин ЛШ">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--primary-gradient);
+            padding: 2rem 0;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: white;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin: 0;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .loading .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3em;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            height: 100%;
+            border: none;
+            position: relative;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .product-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-img-container {
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            color: #6c757d;
+            font-size: 3rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        .card-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border: 1px solid #f5c6cb;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 576px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 1rem;
+            }
+            
+            .card-img-container {
+                height: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+
+        /* Анимация появления карточек */
+        .product-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+        .product-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовок сайта -->
+    <header class="header">
+        <div class="container">
+            <div class="text-center">
+                <h1><i class="fas fa-store me-3"></i>Магазин ЛШ 2025</h1>
+                <p>Качественные товары по выгодным ценам</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="container">
+        <!-- Индикатор загрузки -->
+        <div id="loading" class="loading">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+            <p>Загружаем товары...</p>
+        </div>
+
+        <!-- Сообщение об ошибке -->
+        <div id="error" class="error-message d-none">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="error-text">Произошла ошибка при загрузке товаров</span>
+        </div>
+
+        <!-- Сетка товаров -->
+        <div id="products" class="products-grid"></div>
+    </main>
+
+    <!-- Шаблон карточки товара -->
+    <template id="product-card-template">
+        <div class="product-card">
+            <div class="card-img-container">
+                <img class="card-img-top" alt="Товар">
+                <div class="card-img-placeholder d-none">
+                    <i class="fas fa-image"></i>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+                <p class="card-price"></p>
+            </div>
+        </div>
+    </template>
+
+    <!-- Подвал -->
+    <footer class="footer">
+        <div class="container">
+            <p>Сайт сделан Кружком web-программирования</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class ProductStore {
+            constructor() {
+                this.products = [];
+                this.sheetsUrl = 'https://docs.google.com/spreadsheets/d/1PAWCDgRGMUhZR5-G4xFdGhLZIr40bW1LQTrasbMI--g/export?format=csv';
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadProducts();
+                    this.renderProducts();
+                } catch (error) {
+                    this.showError('Не удалось загрузить товары. Проверьте подключение к интернету.');
+                    console.error('Ошибка загрузки:', error);
+                }
+            }
+
+            async loadProducts() {
+                const response = await fetch(this.sheetsUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const csvText = await response.text();
+                this.products = this.parseCsv(csvText);
+            }
+
+            parseCsv(csvText) {
+                const lines = csvText.trim().split('\n');
+                const products = [];
+
+                for (const line of lines) {
+                    if (!line.trim()) break; // Остановиться на пустой строке
+                    
+                    // Простой парсинг CSV с учетом запятых в значениях
+                    const values = this.parseCsvLine(line);
+                    
+                    if (values.length >= 2 && values[0] && values[1]) {
+                        products.push({
+                            name: values[0].trim(),
+                            price: values[1].trim(),
+                            image: values[2] ? values[2].trim() : null
+                        });
+                    }
+                }
+
+                return products;
+            }
+
+            parseCsvLine(line) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current);
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                
+                values.push(current);
+                return values;
+            }
+
+            renderProducts() {
+                const container = document.getElementById('products');
+                const template = document.getElementById('product-card-template');
+                const loading = document.getElementById('loading');
+
+                // Скрыть индикатор загрузки
+                loading.classList.add('d-none');
+
+                if (this.products.length === 0) {
+                    this.showError('Товары не найдены');
+                    return;
+                }
+
+                // Очистить контейнер
+                container.innerHTML = '';
+
+                // Создать карточки товаров
+                this.products.forEach((product, index) => {
+                    const card = this.createProductCard(template, product, index);
+                    container.appendChild(card);
+                });
+            }
+
+            createProductCard(template, product, index) {
+                const card = template.content.cloneNode(true);
+                const cardElement = card.querySelector('.product-card');
+                const img = card.querySelector('.card-img-top');
+                const placeholder = card.querySelector('.card-img-placeholder');
+                const title = card.querySelector('.card-title');
+                const price = card.querySelector('.card-price');
+
+                // Установить данные
+                title.textContent = product.name;
+                price.textContent = this.formatPrice(product.price);
+
+                // Обработка изображения
+                if (product.image && this.isValidImageUrl(product.image)) {
+                    img.src = product.image;
+                    img.alt = product.name;
+                    
+                    img.onerror = () => {
+                        img.classList.add('d-none');
+                        placeholder.classList.remove('d-none');
+                    };
+                } else {
+                    img.classList.add('d-none');
+                    placeholder.classList.remove('d-none');
+                }
+
+                // Добавить задержку анимации
+                cardElement.style.animationDelay = `${index * 0.1}s`;
+
+                return card;
+            }
+
+            formatPrice(price) {
+                // Попытаться извлечь число из цены
+                const numericPrice = price.toString().replace(/[^\d.,]/g, '');
+                const number = parseFloat(numericPrice.replace(',', '.'));
+                
+                if (!isNaN(number)) {
+                    return `${number} ${this.getJolCurrency(number)}`;
+                }
+                
+                return `${price} Жоль`;
+            }
+
+            getJolCurrency(amount) {
+                const lastDigit = amount % 10;
+                const lastTwoDigits = amount % 100;
+                
+                if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+                    return 'Жолей';
+                }
+                
+                if (lastDigit === 1) {
+                    return 'Жоль';
+                } else if (lastDigit >= 2 && lastDigit <= 4) {
+                    return 'Жоля';
+                } else {
+                    return 'Жолей';
+                }
+            }
+
+            isValidImageUrl(url) {
+                try {
+                    new URL(url);
+                    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url) || url.includes('drive.google.com') || url.includes('imgur.com');
+                } catch {
+                    return false;
+                }
+            }
+
+            showError(message) {
+                const loading = document.getElementById('loading');
+                const error = document.getElementById('error');
+                const errorText = document.getElementById('error-text');
+
+                loading.classList.add('d-none');
+                errorText.textContent = message;
+                error.classList.remove('d-none');
+            }
+        }
+
+        // Инициализация приложения при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            new ProductStore();
+            
+            // Регистрация Service Worker для PWA
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js')
+                        .then((registration) => {
+                            console.log('SW registered: ', registration);
+                        })
+                        .catch((registrationError) => {
+                            console.log('SW registration failed: ', registrationError);
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

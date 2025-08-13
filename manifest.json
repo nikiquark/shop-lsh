@@ -1,0 +1,25 @@
+{
+    "name": "Магазин ЛШ 2025",
+    "short_name": "Магазин ЛШ",
+    "description": "Интернет-магазин Летней Школы 2025. Качественные товары по выгодным ценам в Жолях.",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "theme_color": "#667eea",
+    "background_color": "#f5f7fa",
+    "categories": ["shopping", "education"],
+    "lang": "ru",
+    "dir": "ltr",
+    "scope": "/",
+    "icons": [
+      {
+        "src": "favicon.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable any"
+      }
+    ],
+    
+    "related_applications": [],
+    "prefer_related_applications": false
+  }
